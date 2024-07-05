@@ -1,31 +1,24 @@
-name: Check Indeed DS Jobs
+name: Log Job
 
 on:
   schedule:
-    - cron: '0 17 * * *'
+    - cron: '0 0 * * *' # Runs at midnight UTC every day
   workflow_dispatch:
 
 jobs:
-  check_jobs:
+  log_job:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Fetch all history to avoid unrelated histories issue
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
-
-    - name: Installed package list
-      run: apt list --installed
-    - name: Remove Chrome
-      run: sudo apt purge google-chrome-stable
-    - name: Remove default Chromium
-      run: sudo apt purge chromium-browser
-    - name: Install a new Chromium
-      run: sudo apt install -y chromium-browser
 
     - name: Install dependencies
       run: |
@@ -33,21 +26,17 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run script
-      env:
-        EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        TO_ADDRESS: ${{ secrets.TO_ADDRESS }}
       run: python check_jobs.py
 
-    - name: commit files
+    - name: Configure git
       run: |
-        git config --local user.email "scw7@uw.com"
+        git config --local user.email "scw7@uw.edu"
         git config --local user.name "spencerw"
-        git add -A
-        git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
-        
-    - name: push changes
-      uses: ad-m/github-push-action@v0.6.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: master 
+
+    - name: Commit and push changes
+      run: |
+        git add jobs.csv
+        git commit -m "Update jobs file"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
