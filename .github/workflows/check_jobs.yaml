@@ -26,6 +26,10 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run script
+      env:
+        EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        TO_ADDRESS: ${{ secrets.TO_ADDRESS }}
       run: python check_jobs.py
 
     - name: Configure git

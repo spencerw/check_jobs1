@@ -124,6 +124,8 @@ df = scrape_job_data(driver, 'https://www.indeed.com')[['Job Title', 'Link']][1:
 print('Found ' + str(len(df)) + ' listed jobs')
 print(df)
 
+files = os.listdir(os.getcwd())
+
 if os.path.exists('jobs.csv'):
 	df_prev = pd.read_csv('jobs.csv')
 else:
@@ -133,7 +135,7 @@ prev_links = set(df_prev['Link'])
 df_new = df[~df['Link'].isin(prev_links)]
 print('Found ' + str(len(df_new)) + ' new jobs')
 df_updated = pd.concat([df_prev, df_new])
-df.to_csv('jobs.csv', index=False)
+df_updated.to_csv('jobs.csv', index=False)
 
 # Send an email if there are any new jobs
 if len(df_new) > 0:
