@@ -40,7 +40,11 @@ jobs:
     - name: Commit and push changes
       run: |
         git add jobs.csv
-        git commit -m "Update jobs file"
-        git push origin main
+        if git diff-index --quiet HEAD --; then
+          echo "No changes to commit."
+        else
+          git commit -m "Update jobs file"
+          git push origin main
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
