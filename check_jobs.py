@@ -19,7 +19,7 @@ def configure_webdriver():
     options.add_argument("start-maximized")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option('useAutomationExtension', False)
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=options)
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(version="114.0.5735.90").install()), options=options)
     stealth(driver,
             languages=["en-US", "en"],
             vendor="Google Inc.",
